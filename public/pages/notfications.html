@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oris — Уведомления</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main-content">
+      <header class="main-header">
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h2 class="main-title">Уведомления</h2>
+      </header>
+
+      <div id="notifications-list" class="notifications-list">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.2">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+          </svg>
+          <p>Уведомлений пока нет</p>
+          <span class="empty-state-sub">Здесь появятся лайки и комментарии</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    renderSidebar('notifications');
+    if (!Auth.requireAuth()) window.location.href = '/';
+    App.updateUI();
+    App.initThemeToggle();
+
+    // Sidebar events
+    document.getElementById('logout-btn')?.addEventListener('click', () => Auth.logout());
+    document.getElementById('nav-profile-btn')?.addEventListener('click', () => {
+      const u = API.getUser(); if (u) window.location.href = `/profile/${u.username}`;
+    });
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+    document.querySelectorAll('.sidebar-btn[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.page;
+        if (p === 'feed') window.location.href = '/feed';
+        if (p === 'explore') window.location.href = '/search';
+        if (p === 'notifications') window.location.href = '/notifications';
+        if (p === 'profile') { const u = API.getUser(); if (u) window.location.href = `/profile/${u.username}`; }
+      });
+    });
+  </script>
+</body>
+</html>
