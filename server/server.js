@@ -29,8 +29,12 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/gif', require('./routes/gif'));    // ← ДОБАВЬ
 app.use('/api/admin', require('./routes/admin'));
 
-// SPA — все маршруты отдают index.html
+// SPA — только для НЕ-файловых маршрутов
 app.get('*', (req, res) => {
+  // Если запрашивают файл (есть расширение) — отдать 404
+  if (req.path.match(/\.\w+$/)) {
+    return res.status(404).send('Not found');
+  }
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
