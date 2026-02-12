@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oris — Админка</title>
+  <script>(function(){var t=localStorage.getItem('oris_theme');if(t)document.documentElement.setAttribute('data-theme',t)})()</script>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">Oris</div>
+    <div class="admin-logo-sub">Админ-панель</div>
+    <nav class="admin-nav">
+      <div class="admin-nav-item active" data-section="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-label">Главное</span>
+      </div>
+      <div class="admin-nav-item" data-section="manage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">Управление</span>
+      </div>
+    </nav>
+    <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:auto">
+      <div class="admin-nav-item" id="backToFeed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span class="nav-label">Назад к ленте</span>
+      </div>
+      <div style="padding:10px 12px">
+        <div style="font-size:14px;font-weight:600;color:var(--text)" id="adminUsername"></div>
+        <div style="font-size:12px;color:var(--text-tertiary)" id="adminRole"></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-header">
+      <h2 id="sectionTitle">Главное</h2>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="admin-section active" id="section-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="statUsers">-</div>
+          <div class="stat-label">Пользователей</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statPosts">-</div>
+          <div class="stat-label">Постов</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statBanned">-</div>
+          <div class="stat-label">Забанено</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statVerified">-</div>
+          <div class="stat-label">Верифицировано</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statAdmins">-</div>
+          <div class="stat-label">Админов</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statNewUsers">-</div>
+          <div class="stat-label">Новых за сегодня</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statNewPosts">-</div>
+          <div class="stat-label">Постов за сегодня</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage -->
+    <div class="admin-section" id="section-manage">
+      <div class="admin-search">
+        <input type="text" id="searchUserInput" placeholder="Введите username..." autocomplete="off">
+        <button class="btn btn-primary" id="searchUserBtn">Найти</button>
+      </div>
+
+      <div class="user-card" id="userCard">
+        <div class="user-card-header">
+          <div id="ucAvatar"></div>
+          <div class="user-card-info">
+            <div class="user-card-name" id="ucName"></div>
+            <div class="user-card-username" id="ucUsername"></div>
+            <div class="user-card-meta">Email: <span id="ucEmail"></span> | Рег: <span id="ucCreated"></span></div>
+          </div>
+        </div>
+
+        <div id="ucBadges" class="user-card-badges"></div>
+
+        <div class="user-card-stats">
+          <div class="user-card-stat"><strong id="ucPosts">0</strong> <span>постов</span></div>
+          <div class="user-card-stat"><strong id="ucFollowers">0</strong> <span>подписчиков</span></div>
+          <div class="user-card-stat"><strong id="ucFollowing">0</strong> <span>подписок</span></div>
+        </div>
+
+        <div class="info-block" id="banInfo" style="display:none;margin-bottom:16px"></div>
+
+        <div class="user-card-actions" id="ucActions"></div>
+
+        <div class="ban-reason-input" id="banReasonBlock">
+          <input type="text" class="input" id="banReasonInput" placeholder="Причина бана..." style="flex:1">
+          <button class="btn btn-danger btn-sm" onclick="banUser()">Забанить</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/js/utils.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

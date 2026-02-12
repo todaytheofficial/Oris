@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oris — Лента</title>
+  <script>
+    (function(){var t=localStorage.getItem('oris_theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/feed.css">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">Oris</div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-nav="feed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Главная</span>
+      </div>
+      <div class="nav-item" data-nav="explore">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span class="nav-label">Обзор</span>
+      </div>
+      <div class="nav-item" data-nav="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">Профиль</span>
+      </div>
+      <div class="nav-item" id="adminNavBtn" style="display:none" onclick="goTo('/pages/admin.html')">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+  <span class="nav-label">Админка</span>
+</div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item" id="logoutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="nav-label">Выйти</span>
+      </div>
+      <div class="sidebar-profile" id="sidebarProfile"></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="main-header">
+      <h2>Главная</h2>
+      <div style="display:flex;gap:4px">
+        <div class="feed-tab active" data-tab="feed" style="padding:6px 16px;border-radius:9999px;font-size:14px;font-weight:600;cursor:pointer;background:var(--bg-secondary)">Лента</div>
+        <div class="feed-tab" data-tab="explore" style="padding:6px 16px;border-radius:9999px;font-size:14px;font-weight:600;cursor:pointer">Обзор</div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div id="composerAvatar"></div>
+      <div class="composer-content">
+        <textarea class="composer-textarea" id="composerText" placeholder="Что нового?" rows="1"></textarea>
+        <div class="composer-media-preview" id="composerMediaPreview"></div>
+        <div class="composer-actions">
+          <div class="composer-tools">
+            <div class="composer-tool" id="addImageBtn" title="Фото">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <input type="file" id="imageFileInput" accept="image/*" multiple style="display:none">
+            </div>
+            <div class="composer-tool" id="addVideoBtn" title="Видео">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              <input type="file" id="videoFileInput" accept="video/*" style="display:none">
+            </div>
+            <div class="composer-tool" id="addAudioBtn" title="Аудио">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              <input type="file" id="audioFileInput" accept="audio/*" style="display:none">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="publishBtn">Опубликовать</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="posts-list" id="postsList"></div>
+    <div class="loader-center" id="feedLoader" style="display:none"><div class="loader"></div></div>
+  </main>
+
+  <div class="right-panel">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Поиск людей...">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-nav">
+  <div class="mobile-nav-items">
+    <div class="mobile-nav-item" data-nav="feed">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Главная</span>
+    </div>
+    <div class="mobile-nav-item" data-nav="explore">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      <span>Обзор</span>
+    </div>
+    <div class="mobile-nav-item" data-nav="profile">
+      <div id="mobileProfileAvatar"></div>
+      <span>Профиль</span>
+    </div>
+  </div>
+</nav>
+
+<script src="/js/utils.js"></script>
+<script src="/js/feed.js"></script>
+</body>
+</html>

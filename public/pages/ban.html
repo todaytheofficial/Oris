@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oris — Аккаунт заблокирован</title>
+  <script>(function(){var t=localStorage.getItem('oris_theme');if(t)document.documentElement.setAttribute('data-theme',t)})()</script>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    .ban-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background-color:var(--bg)}
+    .ban-card{max-width:420px;width:100%;text-align:center;animation:modalIn .4s ease}
+    .ban-icon{width:80px;height:80px;margin:0 auto 24px;border-radius:50%;background-color:var(--bg-secondary);display:flex;align-items:center;justify-content:center;border:2px solid var(--danger)}
+    .ban-icon svg{width:40px;height:40px;stroke:var(--danger)}
+    .ban-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px}
+    .ban-subtitle{font-size:14px;color:var(--text-tertiary);margin-bottom:24px}
+    .ban-reason-box{padding:16px;background-color:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:24px;text-align:left}
+    .ban-reason-label{font-size:12px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+    .ban-reason-text{font-size:15px;color:var(--text);font-weight:500}
+    .ban-info{font-size:13px;color:var(--text-tertiary);margin-bottom:24px}
+  </style>
+</head>
+<body>
+<div class="ban-container">
+  <div class="ban-card">
+    <div class="ban-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+      </svg>
+    </div>
+    <div class="ban-title">Аккаунт заблокирован</div>
+    <div class="ban-subtitle" id="banUser"></div>
+    <div class="ban-reason-box">
+      <div class="ban-reason-label">Причина</div>
+      <div class="ban-reason-text" id="banReason">Нарушение правил</div>
+    </div>
+    <div class="ban-info" id="banDate"></div>
+    <button class="btn btn-secondary btn-full" onclick="logout()">Выйти</button>
+  </div>
+</div>
+<script src="/js/utils.js"></script>
+<script>
+  const user=getUser();
+  const token=getToken();
+  if(!token||!user){goTo('/pages/auth.html')}
+  else{
+    document.getElementById('banUser').textContent='@'+(user.username||'');
+    // Загрузить инфу о бане с сервера
+    fetch('/api/admin/check-ban/'+user._id)
+      .then(r=>r.json())
+      .then(d=>{
+        if(!d.banned){goTo('/pages/feed.html');return}
+        document.getElementById('banReason').textContent=d.reason||'Нарушение правил';
+        if(d.bannedAt)document.getElementById('banDate').textContent='Заблокирован '+new Date(d.bannedAt).toLocaleString('ru');
+      })
+      .catch(()=>{});
+  }
+  function logout(){removeToken();goTo('/pages/auth.html')}
+</script>
+</body>
+</html>

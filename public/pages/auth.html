@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oris — Вход</title>
+  <script>
+    (function(){var t=localStorage.getItem('oris_theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <h1>Oris</h1>
+        <p>Социальная сеть нового поколения</p>
+      </div>
+
+      <!-- ===== REGISTER ===== -->
+      <div class="register-section">
+        <div class="auth-progress">
+          <div class="progress-dot active"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+        </div>
+
+        <!-- Step 1: Username + Name -->
+        <div class="auth-step active" data-step="1">
+          <h2>Создать аккаунт</h2>
+          <p class="step-desc">Выберите имя пользователя и отображаемое имя</p>
+          <form class="auth-form" id="step1Form">
+            <div class="input-group">
+              <label>Username</label>
+              <input type="text" class="input" id="regUsername" placeholder="username" maxlength="24" autocomplete="off">
+            </div>
+            <div class="input-group">
+              <label>Имя</label>
+              <input type="text" class="input" id="regName" placeholder="Ваше имя" maxlength="50" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary btn-full btn-lg">Далее</button>
+          </form>
+        </div>
+
+        <!-- Step 2: Email -->
+        <div class="auth-step" data-step="2">
+          <h2>Ваш email</h2>
+          <p class="step-desc">Мы отправим код подтверждения</p>
+          <form class="auth-form" id="step2Form">
+            <div class="input-group">
+              <label>Email</label>
+              <input type="email" class="input" id="regEmail" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <button type="submit" class="btn btn-primary btn-full btn-lg">Отправить код</button>
+          </form>
+        </div>
+
+        <!-- Step 3: Verify code -->
+        <div class="auth-step" data-step="3">
+          <h2>Код подтверждения</h2>
+          <p class="step-desc">Введите 6-значный код из письма</p>
+          <div class="code-input-wrapper">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+          </div>
+          <div class="resend-link">
+            Не пришёл код? <a id="resendCode">Отправить снова</a>
+          </div>
+        </div>
+
+        <!-- Step 4: Avatar -->
+        <div class="auth-step" data-step="4">
+          <h2>Фото профиля</h2>
+          <p class="step-desc">Загрузите аватар, чтобы вас узнавали</p>
+          <div class="avatar-upload-area" id="avatarUploadArea">
+            <div class="avatar-preview" id="avatarPreviewImg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+            <div class="avatar-upload-text">Нажмите, чтобы выбрать фото</div>
+            <div class="avatar-upload-hint">JPG, PNG до 5 МБ</div>
+          </div>
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+          <button class="btn btn-primary btn-full btn-lg" id="completeBtn">Завершить</button>
+          <div class="skip-link">
+            <a id="skipAvatar">Пропустить</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LOGIN ===== -->
+      <div class="login-section">
+        <div id="loginStep1">
+          <h2>Войти</h2>
+          <p class="step-desc">Введите email, мы пришлём код для входа</p>
+          <form class="auth-form" id="loginForm">
+            <div class="input-group">
+              <label>Email</label>
+              <input type="email" class="input" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <button type="submit" class="btn btn-primary btn-full btn-lg">Получить код</button>
+          </form>
+        </div>
+
+        <div id="loginStep2" style="display:none;">
+          <h2>Код для входа</h2>
+          <p class="step-desc">Введите код из письма</p>
+          <div class="code-input-wrapper" id="loginCodeInputs">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="auth-switch">
+          <span>Нет аккаунта?</span>
+          <a id="showRegister">Создать</a>
+        </div>
+      </div>
+
+      <!-- Switch to login -->
+      <div class="auth-switch register-section">
+        <span>Уже есть аккаунт?</span>
+        <a id="showLogin">Войти</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>
