@@ -15,7 +15,7 @@ async function verifyCaptcha(token) {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        secret: process.env.HCAPTCHA_SECRET,
+        secret: process.env.hcpatchakodecer,
         response: token
       })
     });
