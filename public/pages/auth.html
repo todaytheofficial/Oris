@@ -9,10 +9,8 @@
   </script>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/auth.css">
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 </head>
-<div style="text-align:center;padding:20px;font-size:12px;color:var(--text-tertiary)">
-  Регистрируясь, вы соглашаетесь с <a href="/pages/terms.html" style="color:var(--text);text-decoration:underline">Условиями</a> и <a href="/pages/privacy.html" style="color:var(--text);text-decoration:underline">Политикой конфиденциальности</a>
-</div>
 <body>
   <div class="auth-container">
     <div class="auth-card">
@@ -21,20 +19,22 @@
         <p>Социальная сеть нового поколения</p>
       </div>
 
+      <!-- Сообщения -->
+      <div class="auth-message error" id="errorMsg" style="display:none"></div>
+      <div class="auth-message success" id="successMsg" style="display:none"></div>
+
       <!-- ===== REGISTER ===== -->
       <div class="register-section">
         <div class="auth-progress">
           <div class="progress-dot active"></div>
           <div class="progress-dot"></div>
-          <div class="progress-dot"></div>
-          <div class="progress-dot"></div>
         </div>
 
-        <!-- Step 1: Username + Name -->
+        <!-- Step 1: Username + Name + Email + Captcha -->
         <div class="auth-step active" data-step="1">
           <h2>Создать аккаунт</h2>
-          <p class="step-desc">Выберите имя пользователя и отображаемое имя</p>
-          <form class="auth-form" id="step1Form">
+          <p class="step-desc">Заполните данные для регистрации</p>
+          <form class="auth-form" id="registerForm">
             <div class="input-group">
               <label>Username</label>
               <input type="text" class="input" id="regUsername" placeholder="username" maxlength="24" autocomplete="off">
@@ -43,42 +43,19 @@
               <label>Имя</label>
               <input type="text" class="input" id="regName" placeholder="Ваше имя" maxlength="50" autocomplete="off">
             </div>
-            <button type="submit" class="btn btn-primary btn-full btn-lg">Далее</button>
-          </form>
-        </div>
-
-        <!-- Step 2: Email -->
-        <div class="auth-step" data-step="2">
-          <h2>Ваш email</h2>
-          <p class="step-desc">Мы отправим код подтверждения</p>
-          <form class="auth-form" id="step2Form">
             <div class="input-group">
               <label>Email</label>
               <input type="email" class="input" id="regEmail" placeholder="you@example.com" autocomplete="email">
             </div>
-            <button type="submit" class="btn btn-primary btn-full btn-lg">Отправить код</button>
+            <div class="captcha-wrapper" style="display:flex;justify-content:center;margin:16px 0">
+              <div class="h-captcha" id="regCaptchaDiv" data-sitekey="bd00dcf8-d42c-4040-8de4-68de98a44a70"></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="regBtn">Создать аккаунт</button>
           </form>
         </div>
 
-        <!-- Step 3: Verify code -->
-        <div class="auth-step" data-step="3">
-          <h2>Код подтверждения</h2>
-          <p class="step-desc">Введите 6-значный код из письма</p>
-          <div class="code-input-wrapper">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-          </div>
-          <div class="resend-link">
-            Не пришёл код? <a id="resendCode">Отправить снова</a>
-          </div>
-        </div>
-
-        <!-- Step 4: Avatar -->
-        <div class="auth-step" data-step="4">
+        <!-- Step 2: Avatar -->
+        <div class="auth-step" data-step="2">
           <h2>Фото профиля</h2>
           <p class="step-desc">Загрузите аватар, чтобы вас узнавали</p>
           <div class="avatar-upload-area" id="avatarUploadArea">
@@ -100,27 +77,17 @@
       <div class="login-section">
         <div id="loginStep1">
           <h2>Войти</h2>
-          <p class="step-desc">Введите email, мы пришлём код для входа</p>
+          <p class="step-desc">Введите email для входа в аккаунт</p>
           <form class="auth-form" id="loginForm">
             <div class="input-group">
               <label>Email</label>
               <input type="email" class="input" id="loginEmail" placeholder="you@example.com" autocomplete="email">
             </div>
-            <button type="submit" class="btn btn-primary btn-full btn-lg">Получить код</button>
+            <div class="captcha-wrapper" style="display:flex;justify-content:center;margin:16px 0">
+              <div class="h-captcha" id="loginCaptchaDiv" data-sitekey="bd00dcf8-d42c-4040-8de4-68de98a44a70"></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">Войти</button>
           </form>
-        </div>
-
-        <div id="loginStep2" style="display:none;">
-          <h2>Код для входа</h2>
-          <p class="step-desc">Введите код из письма</p>
-          <div class="code-input-wrapper" id="loginCodeInputs">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-          </div>
         </div>
 
         <div class="auth-switch">
@@ -133,6 +100,12 @@
       <div class="auth-switch register-section">
         <span>Уже есть аккаунт?</span>
         <a id="showLogin">Войти</a>
+      </div>
+
+      <div style="text-align:center;padding:16px 0 0;font-size:12px;color:var(--text-tertiary)">
+        Регистрируясь, вы соглашаетесь с
+        <a href="/pages/terms.html" style="color:var(--text-secondary);text-decoration:underline">Условиями</a> и
+        <a href="/pages/privacy.html" style="color:var(--text-secondary);text-decoration:underline">Политикой конфиденциальности</a>
       </div>
     </div>
   </div>
