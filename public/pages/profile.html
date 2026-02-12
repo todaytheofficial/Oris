@@ -15,24 +15,23 @@
 <div class="app-layout">
   <aside class="sidebar">
     <div class="sidebar-logo">Oris</div>
-<nav class="sidebar-nav">
-  <div class="nav-item" data-nav="feed">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span class="nav-label">Главная</span>
-  </div>
-  <div class="nav-item" data-nav="explore">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-    <span class="nav-label">Обзор</span>
-  </div>
-  <div class="nav-item active" data-nav="profile">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span class="nav-label">Профиль</span>
-  </div>
-  <div class="nav-item" id="adminNavBtn" style="display:none" onclick="goTo('/pages/admin.html')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-    <span class="nav-label">Админка</span>
-  </div>
-</nav>
+    <nav class="sidebar-nav">
+      <div class="nav-item" data-nav="feed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Главная</span>
+      </div>
+      <div class="nav-item" data-nav="explore">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span class="nav-label">Обзор</span>
+      </div>
+      <div class="nav-item active" data-nav="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">Профиль</span>
+      </div>
+      <div class="nav-item" id="adminNavBtn" style="display:none" onclick="goTo('/pages/admin.html')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span class="nav-label">Админка</span>
+      </div>
     </nav>
     <div class="sidebar-bottom">
       <div class="nav-item" id="logoutBtn">
@@ -44,7 +43,6 @@
   </aside>
 
   <main class="main-content" id="profileContent">
-    <!-- Хедер: Назад + Имя + Настройки -->
     <div class="main-header">
       <div class="header-left">
         <div class="back-btn" id="backBtn">
@@ -58,10 +56,8 @@
       <div class="header-right" id="headerRight"></div>
     </div>
 
-    <!-- Profile Header -->
     <div id="profileHeader" class="profile-header"></div>
 
-    <!-- Tabs -->
     <div class="profile-tabs">
       <div class="profile-tab active" data-tab="posts">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -73,7 +69,6 @@
       </div>
     </div>
 
-    <!-- Posts -->
     <div class="posts-list" id="profilePosts"></div>
     <div class="loader-center" id="profileLoader" style="display:none"><div class="loader"></div></div>
   </main>
@@ -147,6 +142,24 @@
       </button>
     </div>
     <div class="settings-body">
+
+      <!-- ===== Правовая информация — ИСПРАВЛЕНО ===== -->
+      <div class="settings-item" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <div class="settings-item-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <div>
+            <div class="settings-item-label">Правовая информация</div>
+            <div class="settings-item-desc">Условия, конфиденциальность, правила</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:36px">
+          <a href="/pages/terms.html" class="btn btn-sm btn-secondary" style="text-decoration:none;font-size:12px">Условия</a>
+          <a href="/pages/privacy.html" class="btn btn-sm btn-secondary" style="text-decoration:none;font-size:12px">Конфиденциальность</a>
+          <a href="/pages/rules.html" class="btn btn-sm btn-secondary" style="text-decoration:none;font-size:12px">Правила</a>
+        </div>
+      </div>
+
+      <!-- ===== Тёмная тема — ИСПРАВЛЕНО (было вне settings-item) ===== -->
       <div class="settings-item">
         <div class="settings-item-left">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -157,6 +170,8 @@
         </div>
         <label class="toggle"><input type="checkbox" id="themeToggle"><div class="toggle-slider"></div></label>
       </div>
+
+      <!-- ===== Выйти ===== -->
       <div class="settings-item">
         <div class="settings-item-left">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -167,6 +182,7 @@
         </div>
         <button class="btn btn-sm btn-secondary" id="settingsLogoutBtn">Выйти</button>
       </div>
+
     </div>
   </div>
 </div>
