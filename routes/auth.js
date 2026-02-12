@@ -12,7 +12,12 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
-  }
+  },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
+  pool: true,
+  maxConnections: 3
 });
 
 function generateCode() {
@@ -72,29 +77,20 @@ router.post('/step1', async (req, res) => {
   }
 });
 
-// ============ STEP 2: Email + Send Code ============
 router.post('/step2', authMiddleware, async (req, res) => {
   try {
     const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ error: 'Email обязателен' });
-    }
+    if (!email) return res.status(400).json({ error: 'Email обязателен' });
 
     const emailLower = email.toLowerCase().trim();
 
-    // Проверяем: есть ли ЗАВЕРШЁННЫЙ юзер с таким email
     const emailTaken = await User.findOne({
       email: emailLower,
       registrationStep: 4,
       _id: { $ne: req.userId }
     });
+    if (emailTaken) return res.status(400).json({ error: 'Email уже используется' });
 
-    if (emailTaken) {
-      return res.status(400).json({ error: 'Email уже используется' });
-    }
-
-    // Удаляем всех НЕЗАВЕРШЁННЫХ юзеров с таким email (кроме текущего)
     await User.deleteMany({
       email: emailLower,
       registrationStep: { $lt: 4 },
@@ -111,27 +107,22 @@ router.post('/step2', authMiddleware, async (req, res) => {
       registrationStep: 2
     });
 
-    // Отправляем письмо
-    try {
-      await transporter.sendMail({
-        from: `"Oris" <${process.env.SMTP_USER}>`,
-        to: emailLower,
-        subject: 'Код подтверждения Oris',
-        html: `
-          <div style="font-family:Arial,sans-serif;max-width:400px;margin:0 auto;padding:32px;background:#fff;border-radius:16px;border:1px solid #eee;">
-            <h2 style="color:#000;margin-bottom:8px;">Oris</h2>
-            <p style="color:#666;margin-bottom:24px;">Ваш код подтверждения:</p>
-            <div style="font-size:36px;font-weight:bold;letter-spacing:8px;text-align:center;color:#000;padding:20px;background:#f5f5f5;border-radius:12px;">${code}</div>
-            <p style="color:#999;font-size:13px;margin-top:24px;">Код действителен 10 минут.</p>
-          </div>
-        `
-      });
-    } catch (mailErr) {
-      console.error('Mail error:', mailErr);
-      return res.status(500).json({ error: 'Не удалось отправить письмо' });
-    }
-
+    // Отправляем сразу ответ клиенту, письмо отправляем в фоне
     res.json({ success: true, message: 'Код отправлен на ' + emailLower });
+
+    // Фоновая отправка
+    transporter.sendMail({
+      from: '"Oris" <' + process.env.SMTP_USER + '>',
+      to: emailLower,
+      subject: 'Код подтверждения Oris',
+      html: '<div style="font-family:Arial,sans-serif;max-width:400px;margin:0 auto;padding:32px;background:#fff;border-radius:16px;border:1px solid #eee;">'
+        + '<h2 style="color:#000;margin-bottom:8px;">Oris</h2>'
+        + '<p style="color:#666;margin-bottom:24px;">Ваш код подтверждения:</p>'
+        + '<div style="font-size:36px;font-weight:bold;letter-spacing:8px;text-align:center;color:#000;padding:20px;background:#f5f5f5;border-radius:12px;">' + code + '</div>'
+        + '<p style="color:#999;font-size:13px;margin-top:24px;">Код действителен 10 минут.</p>'
+        + '</div>'
+    }).catch(err => console.error('Mail send error:', err.message));
+
   } catch (err) {
     console.error('Step2 error:', err);
     res.status(500).json({ error: 'Ошибка сервера' });
@@ -174,13 +165,10 @@ router.post('/verify-code', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ STEP 3b: Resend Code ============
 router.post('/resend-code', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    if (!user || !user.email) {
-      return res.status(400).json({ error: 'Сначала укажите email' });
-    }
+    if (!user || !user.email) return res.status(400).json({ error: 'Сначала укажите email' });
 
     const code = generateCode();
     const expires = new Date(Date.now() + 10 * 60 * 1000);
@@ -190,23 +178,21 @@ router.post('/resend-code', authMiddleware, async (req, res) => {
       verificationCodeExpires: expires
     });
 
-    await transporter.sendMail({
-      from: `"Oris" <${process.env.SMTP_USER}>`,
+    res.json({ success: true, message: 'Новый код отправлен' });
+
+    transporter.sendMail({
+      from: '"Oris" <' + process.env.SMTP_USER + '>',
       to: user.email,
       subject: 'Новый код подтверждения Oris',
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:400px;margin:0 auto;padding:32px;background:#fff;border-radius:16px;border:1px solid #eee;">
-          <h2 style="color:#000;">Oris</h2>
-          <p style="color:#666;">Новый код:</p>
-          <div style="font-size:36px;font-weight:bold;letter-spacing:8px;text-align:center;color:#000;padding:20px;background:#f5f5f5;border-radius:12px;">${code}</div>
-          <p style="color:#999;font-size:13px;margin-top:24px;">Действителен 10 минут.</p>
-        </div>
-      `
-    });
+      html: '<div style="font-family:Arial,sans-serif;max-width:400px;margin:0 auto;padding:32px;background:#fff;border-radius:16px;border:1px solid #eee;">'
+        + '<h2 style="color:#000;">Oris</h2>'
+        + '<p style="color:#666;">Новый код:</p>'
+        + '<div style="font-size:36px;font-weight:bold;letter-spacing:8px;text-align:center;color:#000;padding:20px;background:#f5f5f5;border-radius:12px;">' + code + '</div>'
+        + '<p style="color:#999;font-size:13px;margin-top:24px;">Действителен 10 минут.</p>'
+        + '</div>'
+    }).catch(err => console.error('Resend mail error:', err.message));
 
-    res.json({ success: true, message: 'Новый код отправлен' });
   } catch (err) {
-    console.error('Resend error:', err);
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
