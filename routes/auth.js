@@ -5,25 +5,26 @@ const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
 
-// ===== SMTP транспорт вместо Resend =====
+// ===== Gmail SMTP порт 587 STARTTLS =====
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT, 10),
-  secure: parseInt(process.env.SMTP_PORT, 10) === 465,
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
   },
-  // Важно для Render.com — увеличенные таймауты
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000
+  tls: {
+    rejectUnauthorized: false
+  },
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000
 });
 
-// Проверяем SMTP при старте
 transporter.verify()
-  .then(() => console.log('✅ SMTP connection OK'))
-  .catch(err => console.error('❌ SMTP connection FAILED:', err.message));
+  .then(() => console.log('✅ Gmail SMTP OK (port 587)'))
+  .catch(err => console.error('❌ Gmail SMTP FAILED:', err.message));
 
 function generateCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -42,7 +43,6 @@ function codeHTML(code) {
     + '</div>';
 }
 
-// ===== Надёжная отправка email с ретраями =====
 async function sendEmail(to, subject, code) {
   const mailOptions = {
     from: `Oris <${process.env.SMTP_USER}>`,
@@ -54,17 +54,16 @@ async function sendEmail(to, subject, code) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const info = await transporter.sendMail(mailOptions);
-      console.log(`✅ Email sent to ${to} (attempt ${attempt}), messageId: ${info.messageId}`);
+      console.log(`✅ Email sent to ${to} (attempt ${attempt}), id: ${info.messageId}`);
       return true;
     } catch (err) {
-      console.error(`❌ Email attempt ${attempt}/3 to ${to} failed:`, err.message);
+      console.error(`❌ Attempt ${attempt}/3 to ${to}:`, err.message);
       if (attempt < 3) {
-        // Ждём перед повтором
-        await new Promise(r => setTimeout(r, 2000 * attempt));
+        await new Promise(r => setTimeout(r, 3000 * attempt));
       }
     }
   }
-  console.error(`❌ All 3 email attempts to ${to} failed`);
+  console.error(`❌ All attempts to ${to} failed`);
   return false;
 }
 
@@ -83,14 +82,18 @@ router.post('/step1', async (req, res) => {
     const user = new User({ username: clean, name: name.trim(), registrationStep: 1 });
     await user.save();
     const token = generateToken(user._id);
-    res.json({ success: true, token, user: { _id: user._id, username: user.username, name: user.name, registrationStep: 1 } });
+    res.json({
+      success: true,
+      token,
+      user: { _id: user._id, username: user.username, name: user.name, registrationStep: 1 }
+    });
   } catch (err) {
     console.error('Step1:', err);
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
 
-// STEP 2 — отправляем email ДО ответа клиенту
+// STEP 2
 router.post('/step2', authMiddleware, async (req, res) => {
   try {
     const { email } = req.body;
@@ -111,7 +114,6 @@ router.post('/step2', authMiddleware, async (req, res) => {
       registrationStep: 2
     });
 
-    // Сначала отправляем email, потом отвечаем
     const sent = await sendEmail(e, 'Код подтверждения Oris', code);
     if (!sent) {
       return res.status(500).json({ error: 'Не удалось отправить письмо. Попробуйте позже.' });
